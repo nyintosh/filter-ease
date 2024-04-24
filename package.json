@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"format": "prettier \"./src/**/*.{ts,tsx}\" --write --ignore-unknown",
+		"db:seed": "tsx ./src/db/seed.ts",
 		"dev": "next dev --turbo",
 		"build": "next build",
 		"start": "next start",
@@ -26,12 +27,14 @@
 		"@types/node": "^20",
 		"@types/react": "^18",
 		"@types/react-dom": "^18",
+		"dotenv": "^16.4.5",
 		"eslint": "^8",
 		"eslint-config-next": "14.2.2",
 		"postcss": "^8",
 		"prettier": "^3.2.5",
 		"prettier-plugin-tailwindcss": "^0.5.14",
 		"tailwindcss": "^3.4.1",
+		"tsx": "^4.7.2",
 		"typescript": "^5"
 	}
 }

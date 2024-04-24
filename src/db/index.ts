@@ -1,10 +1,10 @@
 import { Index } from '@upstash/vector';
 
-type Product = {
+export type Product = {
 	id: string;
 	imageUrl: string;
 	name: string;
-	color: 'white' | 'baige' | 'blue' | 'green' | 'purple';
+	color: 'white' | 'beige' | 'blue' | 'green' | 'purple';
 	size: 'S' | 'M' | 'L';
 	price: number;
 };

@@ -25,7 +25,7 @@ const SIZES = ['S', 'M', 'L'] as const;
 					color,
 					name: `${
 						color.slice(0, 1).toUpperCase() + color.slice(1)
-					} shirt ${i}`,
+					} shirt ${i + 1}`,
 					size,
 					price: getRandomPrice(),
 				});

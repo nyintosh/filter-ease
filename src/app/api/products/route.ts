@@ -47,8 +47,12 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
 		const filter = new Filter();
 
-		color.forEach((color) => filter.add('color', '=', color));
-		size.forEach((size) => filter.add('size', '=', size));
+		if (color.length) color.forEach((color) => filter.add('color', '=', color));
+		else filter.addRaw('color', 'color = ""');
+
+		if (size.length) size.forEach((size) => filter.add('size', '=', size));
+		else filter.addRaw('size', 'size = ""');
+
 		filter.addRaw('price', `price >= ${price[0]} AND price <= ${price[1]}`);
 
 		const products = await db.query({

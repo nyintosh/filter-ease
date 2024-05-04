@@ -9,6 +9,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
 	title: 'Filter Ease',
+	description: 'Filter products with ease',
 };
 
 export default function RootLayout({

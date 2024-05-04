@@ -9,11 +9,11 @@ import {
 	FilterIcon,
 	SortAscIcon,
 	SortDescIcon,
-	XIcon,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { ProductCard, ProductCardSkeleton } from '@/components';
+import EmptyState from '@/components/EmptyState';
 import {
 	Accordion,
 	AccordionContent,
@@ -391,12 +391,7 @@ const HomePage = () => {
 								<ProductCardSkeleton key={idx} />
 							))
 						) : products?.length === 0 ? (
-							<p className='mt-24 grid place-items-center text-sm text-gray-400 sm:col-span-2 md:col-span-3 lg:mt-0 lg:pb-24'>
-								<div className='flex flex-col items-center gap-1'>
-									<XIcon className='size-6 text-red-500' />
-									<span>No product found.</span>
-								</div>
-							</p>
+							<EmptyState />
 						) : (
 							products?.map((product) => (
 								<ProductCard key={product.id} product={product.metadata!} />

@@ -3,13 +3,15 @@
 import { useQuery } from '@tanstack/react-query';
 import { QueryResult } from '@upstash/vector';
 import axios from 'axios';
+import debounce from 'lodash.debounce';
 import {
 	ChevronDownIcon,
 	FilterIcon,
 	SortAscIcon,
 	SortDescIcon,
+	XIcon,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { ProductCard, ProductCardSkeleton } from '@/components';
 import {
@@ -97,17 +99,35 @@ const HomePage = () => {
 		},
 	});
 
-	const { isFetching, data: products } = useQuery({
+	const {
+		isFetching,
+		data: products,
+		refetch,
+	} = useQuery({
 		queryFn: async () => {
-			const { data } = await axios.get<QueryResult<Product>[]>(
+			const { data } = await axios.post<QueryResult<Product>[]>(
 				'/api/products',
-				{ params: filter },
+				{
+					filter: {
+						...filter,
+						price: filter.price.range,
+					},
+				},
 			);
 
 			return data;
 		},
-		queryKey: ['products', filter],
+		queryKey: ['products'],
 	});
+
+	const refetchApi = debounce(refetch, 500);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const debounceRefetch = useCallback(refetchApi, []);
+
+	useEffect(() => {
+		debounceRefetch();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [filter]);
 
 	const handleArrayFilter = ({
 		key,
@@ -155,12 +175,12 @@ const HomePage = () => {
 							{SORT_OPTIONS.map((option) => (
 								<DropdownMenuItem
 									key={option.value}
-									onClick={() => {
+									onClick={() =>
 										setFilter((prev) => ({
 											...prev,
 											sort: option.value,
-										}));
-									}}
+										}))
+									}
 									className={cn('w-full px-4 py-2 text-left text-sm', {
 										'bg-gray-100 text-gray-900': option.value === filter.sort,
 										'text-gray-500': option.value !== filter.sort,
@@ -371,8 +391,11 @@ const HomePage = () => {
 								<ProductCardSkeleton key={idx} />
 							))
 						) : products?.length === 0 ? (
-							<p className='mt-24 grid place-items-center text-sm text-gray-400 sm:col-span-2 lg:col-span-3'>
-								No product found.
+							<p className='mt-24 grid place-items-center text-sm text-gray-400 sm:col-span-2 md:col-span-3 lg:mt-0 lg:pb-24'>
+								<div className='flex flex-col items-center gap-1'>
+									<XIcon className='size-6 text-red-500' />
+									<span>No product found.</span>
+								</div>
 							</p>
 						) : (
 							products?.map((product) => (

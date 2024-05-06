@@ -32,13 +32,13 @@ Make sure you have Node.js installed on your machine.
 Clone the repository:
 
 ```bash
-git clone https://github.com/nyintosh/semantic-search.git
+git clone https://github.com/nyintosh/filter-ease.git
 ```
 
 Navigate to the project directory:
 
 ```bash
-cd semantic-search
+cd filter-ease
 ```
 
 Install dependencies:
@@ -64,7 +64,7 @@ pnpm install
 
 ## Important
 
-To run this locally, make sure you've set up Vector and obtained API keys from [Upstash Vector](https://upstash.com/docs/vector/overall/whatisvector). Alternatively, you can utilize similar technologies and update the configuration accordingly.
+To run this locally, make sure you've set up Vector and obtained API keys from [Upstash](https://upstash.com). Alternatively, you can utilize similar technologies and update the configuration accordingly.
 
 ## Environment Variables
 

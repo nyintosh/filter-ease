@@ -1,5 +1,7 @@
 # Filter Ease
 
+<img width="1408" alt="SCR-20240703-kgrk" src="https://github.com/nyintosh/filter-ease/assets/56629705/6e52d04f-bac0-4990-80ee-4c7d063887b5">
+
 ## Description
 
 A simple and efficient product filtering system, experiencing the latest technologies, streamlines your search effortlessly.

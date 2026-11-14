@@ -2,14 +2,13 @@
 
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import debounce from 'lodash.debounce';
 import {
 	ChevronDownIcon,
 	FilterIcon,
 	SortAscIcon,
 	SortDescIcon,
 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ProductCard, ProductCardSkeleton } from '@/components';
 import EmptyState from '@/components/EmptyState';
@@ -26,7 +25,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Slider } from '@/components/ui/slider';
-import { Product } from '@/db';
+import type { Product } from '@/db';
 import { ProductState, cn } from '@/lib';
 
 const SUBCATEGORIES = [
@@ -98,35 +97,27 @@ const HomePage = () => {
 		},
 	});
 
-	const {
-		isFetching,
-		data: products,
-		refetch,
-	} = useQuery({
+	// Wait for the filter to settle (e.g. while dragging the price slider) before querying.
+	const [debouncedFilter, setDebouncedFilter] = useState(filter);
+
+	useEffect(() => {
+		const timeout = setTimeout(() => setDebouncedFilter(filter), 500);
+		return () => clearTimeout(timeout);
+	}, [filter]);
+
+	const { isFetching, data: products } = useQuery({
 		queryFn: async () => {
-			const { data } = await axios.post<Product[]>(
-				'/api/products',
-				{
-					filter: {
-						...filter,
-						price: filter.price.range,
-					},
+			const { data } = await axios.post<Product[]>('/api/products', {
+				filter: {
+					...debouncedFilter,
+					price: debouncedFilter.price.range,
 				},
-			);
+			});
 
 			return data;
 		},
-		queryKey: ['products'],
+		queryKey: ['products', debouncedFilter],
 	});
-
-	const refetchApi = debounce(refetch, 500);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const debounceRefetch = useCallback(refetchApi, []);
-
-	useEffect(() => {
-		debounceRefetch();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [filter]);
 
 	const handleArrayFilter = ({
 		key,

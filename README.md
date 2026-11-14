@@ -14,8 +14,6 @@ A simple and efficient product filtering system, experiencing the latest technol
 
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
-- [Important](#important)
-- [Environment Variables](#environment-variables)
 - [Starting the Development Server](#starting-the-development-server)
 - [Contributing](#contributing)
 - [Live Preview](#live-preview)
@@ -25,7 +23,8 @@ A simple and efficient product filtering system, experiencing the latest technol
 - TypeScript
 - Next.js
 - Tailwind CSS
-- VectorDB
+- TanStack Query
+- Zod
 
 ## Installation
 
@@ -63,19 +62,6 @@ yarn install
 ```bash
 pnpm install
 ```
-
-## Important
-
-To run this locally, make sure you've set up Vector and obtained API keys from [Upstash](https://upstash.com). Alternatively, you can utilize similar technologies and update the configuration accordingly.
-
-## Environment Variables
-
-This project requires the following environment variables:
-
-- `UPSTASH_VECTOR_REST_URL`
-- `UPSTASH_VECTOR_REST_TOKEN`
-
-Make sure to set these environment variables in your development environment.
 
 ## Starting the Development Server
 

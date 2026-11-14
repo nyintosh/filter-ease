@@ -1,7 +1,6 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { QueryResult } from '@upstash/vector';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
 import {
@@ -105,7 +104,7 @@ const HomePage = () => {
 		refetch,
 	} = useQuery({
 		queryFn: async () => {
-			const { data } = await axios.post<QueryResult<Product>[]>(
+			const { data } = await axios.post<Product[]>(
 				'/api/products',
 				{
 					filter: {
@@ -394,7 +393,7 @@ const HomePage = () => {
 							<EmptyState />
 						) : (
 							products?.map((product) => (
-								<ProductCard key={product.id} product={product.metadata!} />
+								<ProductCard key={product.id} product={product} />
 							))
 						)}
 					</ul>

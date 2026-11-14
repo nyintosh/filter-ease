@@ -1,74 +1,38 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 
-import { db } from '@/db';
+import { PRODUCTS } from '@/db';
 import { productFilterSchema } from '@/lib';
 
-class Filter {
-	private filters: Map<string, string[]> = new Map();
+const MAX_RESULTS = 12;
 
-	hasFilter() {
-		return this.filters.size > 0;
+export const POST = async (req: NextRequest) => {
+	const body = await req.json().catch(() => null);
+	const parsed = productFilterSchema.safeParse(body?.filter);
+
+	if (!parsed.success) {
+		return Response.json({ error: 'Invalid filter' }, { status: 400 });
 	}
 
-	add(key: string, operator: string, value: string | number) {
-		const filters = this.filters.get(key) || [];
+	const {
+		sort,
+		color,
+		size,
+		price: [min, max],
+	} = parsed.data;
 
-		filters.push(
-			`${key} ${operator} ${typeof value === 'number' ? value : `"${value}"`}`,
+	const products = PRODUCTS.filter(
+		(product) =>
+			color.includes(product.color) &&
+			size.includes(product.size) &&
+			product.price >= min &&
+			product.price <= max,
+	);
+
+	if (sort !== 'none') {
+		products.sort((a, b) =>
+			sort === 'price-asc' ? a.price - b.price : b.price - a.price,
 		);
-
-		this.filters.set(key, filters);
 	}
 
-	addRaw(key: string, rawFilter: string) {
-		this.filters.set(key, [rawFilter]);
-	}
-
-	get() {
-		const parts: string[] = [];
-
-		this.filters.forEach((filter) => {
-			const groupedValues = filter.join(' OR ');
-			parts.push(`(${groupedValues})`);
-		});
-
-		return parts.join(' AND ');
-	}
-}
-
-const AVG = 25; // average product price
-const MIN = 0; // minimum product price
-const MAX = 50; // maximum product price
-
-export const POST = async (req: NextRequest, res: NextResponse) => {
-	try {
-		const body = await req.json();
-		const { sort, color, size, price } = productFilterSchema.parse(body.filter);
-
-		const filter = new Filter();
-
-		if (color.length) color.forEach((color) => filter.add('color', '=', color));
-		else filter.addRaw('color', 'color = ""');
-
-		if (size.length) size.forEach((size) => filter.add('size', '=', size));
-		else filter.addRaw('size', 'size = ""');
-
-		filter.addRaw('price', `price >= ${price[0]} AND price <= ${price[1]}`);
-
-		const products = await db.query({
-			topK: 12,
-			vector: [
-				0,
-				0,
-				sort === 'price-desc' ? MAX : sort === 'price-asc' ? MIN : AVG,
-			],
-			includeMetadata: true,
-			filter: filter.hasFilter() ? filter.get() : undefined,
-		});
-
-		return new Response(JSON.stringify(products));
-	} catch (error) {
-		console.error(error);
-		return new Response(JSON.stringify({ error: 'Unexpected error occurred' }));
-	}
+	return Response.json(products.slice(0, MAX_RESULTS));
 };

@@ -14,6 +14,8 @@ A simple and efficient product filtering system, experiencing the latest technol
 
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
+- [Important](#important)
+- [Environment Variables](#environment-variables)
 - [Starting the Development Server](#starting-the-development-server)
 - [Contributing](#contributing)
 - [Live Preview](#live-preview)
@@ -25,6 +27,7 @@ A simple and efficient product filtering system, experiencing the latest technol
 - Tailwind CSS
 - TanStack Query
 - Zod
+- Cloudflare Vectorize
 
 ## Installation
 
@@ -62,6 +65,28 @@ yarn install
 ```bash
 pnpm install
 ```
+
+## Important
+
+Products are stored in a [Cloudflare Vectorize](https://developers.cloudflare.com/vectorize/) index as `[color, size, price]` vectors, with their details as metadata. Filters run as metadata filters, and sorting by price queries for the vector nearest the lowest or highest price.
+
+To set it up in your own Cloudflare account (all within the free plan):
+
+```bash
+npm install --global cf && cf auth login
+cf vectorize create --name filter-ease --config-dimensions 32 --config-metric euclidean
+cf vectorize metadata-index create filter-ease --property-name color --index-type string
+cf vectorize metadata-index create filter-ease --property-name size --index-type string
+cf vectorize metadata-index create filter-ease --property-name price --index-type number
+pnpm db:seed
+```
+
+## Environment Variables
+
+Copy `.env.example` to `.env` and set:
+
+- `CLOUDFLARE_ACCOUNT_ID`
+- `CLOUDFLARE_API_TOKEN`: an API token with the **Vectorize Read** permission
 
 ## Starting the Development Server
 

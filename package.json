@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"format": "prettier \"./src/**/*.{ts,tsx}\" --write --ignore-unknown",
+		"db:seed": "tsx ./src/db/seed.ts",
 		"dev": "next dev --turbo",
 		"build": "next build",
 		"start": "next start",
@@ -18,7 +19,6 @@
 		"axios": "^1.6.8",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",
-		"lodash.debounce": "^4.0.8",
 		"lucide-react": "^0.372.0",
 		"next": "14.2.2",
 		"react": "^18.2.0",
@@ -30,7 +30,6 @@
 	"devDependencies": {
 		"@tailwindcss/aspect-ratio": "^0.4.2",
 		"@tanstack/eslint-plugin-query": "^5.28.11",
-		"@types/lodash.debounce": "^4.0.9",
 		"@types/node": "^20.12.7",
 		"@types/react": "^18.2.79",
 		"@types/react-dom": "^18.2.25",
@@ -40,6 +39,7 @@
 		"prettier": "^3.2.5",
 		"prettier-plugin-tailwindcss": "^0.5.14",
 		"tailwindcss": "^3.4.3",
+		"tsx": "^4.23.15",
 		"typescript": "^5.4.5"
 	}
 }
